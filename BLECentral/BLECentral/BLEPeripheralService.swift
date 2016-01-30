@@ -9,6 +9,14 @@
 import Foundation
 import CoreBluetooth
 
-class BLEPeripheralService: NSObject {
-
-}
+typealias BLEPeripheralService = CBService
+//class BLEPeripheralService: NSObject {
+//
+//    private(set) var service: CBService
+//    
+//    init(service: CBService) {
+//        self.service = service
+//        super.init()
+//    }
+//    
+//}

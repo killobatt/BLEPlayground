@@ -15,6 +15,9 @@ class DeviceDiscoveryTableViewCell: UITableViewCell {
             if let device = self.device {
                 self.nameLabel.text = device.peripheral.name
                 self.RSSILabel.text = "\(device.RSSI) db"
+                device.observeRSSIWithCallback { (RSSI) -> Void in
+                    self.RSSILabel.text = "\(RSSI) db"
+                }
             } else {
                 self.nameLabel.text = ""
                 self.RSSILabel.text = "0 db"

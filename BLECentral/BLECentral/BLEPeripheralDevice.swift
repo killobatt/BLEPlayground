@@ -12,6 +12,7 @@ import CoreBluetooth
 class BLEPeripheralDevice: NSObject {
     
     private(set) var peripheral: CBPeripheral
+    private(set) var services: [BLEPeripheralService] = []
     var RSSI: NSNumber = 0
     
     init(peripheral: CBPeripheral) {
@@ -20,8 +21,18 @@ class BLEPeripheralDevice: NSObject {
         self.peripheral.delegate = self
     }
     
+    private var fetchServicesCallback: (([BLEPeripheralService]) -> Void)? = nil
+    func fetchServicesListWithCallback(callback:(services: [BLEPeripheralService]) -> Void) {
+        self.fetchServicesCallback = callback
+        self.peripheral.discoverServices(nil)
+    }
     
     
+    private var RSSIObserveCallback: ((RSSI: NSNumber) -> Void)? = nil
+    func observeRSSIWithCallback(callback:(RSSI: NSNumber) -> Void) {
+        self.RSSIObserveCallback = callback
+        self.peripheral.readRSSI()
+    }
 }
 
 extension BLEPeripheralDevice: CBPeripheralDelegate {
@@ -60,7 +71,8 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @discussion			This method returns the result of a @link readRSSI: @/link call.
     */
     func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
-        
+        self.RSSI = RSSI
+        self.RSSIObserveCallback?(RSSI: RSSI)
     }
     
     /*!
@@ -74,7 +86,12 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *
     */
     func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
+        NSLog("Peripheral: \(peripheral)\n did discover services: \(peripheral.services), error: \(error)")
         
+        if let services = peripheral.services {
+            self.services = services
+            self.fetchServicesCallback?(services)
+        }
     }
     
     /*!

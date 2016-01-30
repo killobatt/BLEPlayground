@@ -20,6 +20,8 @@
 		1EBF730A1C5BB7FC0043E591 /* BLEPeripheralDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF73091C5BB7FC0043E591 /* BLEPeripheralDeviceTests.swift */; };
 		1EBF730C1C5BB8060043E591 /* BLEPeripheralServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF730B1C5BB8060043E591 /* BLEPeripheralServiceTests.swift */; };
 		1EBF73101C5BE4ED0043E591 /* DeviceDiscoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF730F1C5BE4ED0043E591 /* DeviceDiscoveryViewController.swift */; };
+		1EBF73121C5BE74F0043E591 /* DeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF73111C5BE74F0043E591 /* DeviceViewController.swift */; };
+		1EBF73141C5BE75B0043E591 /* DeviceServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF73131C5BE75B0043E591 /* DeviceServiceCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		1EBF73091C5BB7FC0043E591 /* BLEPeripheralDeviceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEPeripheralDeviceTests.swift; sourceTree = "<group>"; };
 		1EBF730B1C5BB8060043E591 /* BLEPeripheralServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEPeripheralServiceTests.swift; sourceTree = "<group>"; };
 		1EBF730F1C5BE4ED0043E591 /* DeviceDiscoveryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryViewController.swift; sourceTree = "<group>"; };
+		1EBF73111C5BE74F0043E591 /* DeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceViewController.swift; sourceTree = "<group>"; };
+		1EBF73131C5BE75B0043E591 /* DeviceServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceServiceCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +119,8 @@
 				1EBF73051C5BB5F30043E591 /* BLEPeripheralService.swift */,
 				1EBF730F1C5BE4ED0043E591 /* DeviceDiscoveryViewController.swift */,
 				1EBF72A71C5AC0EB0043E591 /* DeviceDiscoveryTableViewCell.swift */,
+				1EBF73111C5BE74F0043E591 /* DeviceViewController.swift */,
+				1EBF73131C5BE75B0043E591 /* DeviceServiceCell.swift */,
 				1EBF727B1C5AC0320043E591 /* Main.storyboard */,
 				1EBF727E1C5AC0320043E591 /* Assets.xcassets */,
 				1EBF72801C5AC0320043E591 /* LaunchScreen.storyboard */,
@@ -280,7 +286,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EBF72781C5AC0320043E591 /* AppDelegate.swift in Sources */,
+				1EBF73121C5BE74F0043E591 /* DeviceViewController.swift in Sources */,
 				1EBF73101C5BE4ED0043E591 /* DeviceDiscoveryViewController.swift in Sources */,
+				1EBF73141C5BE75B0043E591 /* DeviceServiceCell.swift in Sources */,
 				1EBF72A81C5AC0EB0043E591 /* DeviceDiscoveryTableViewCell.swift in Sources */,
 				1EBF73081C5BB69F0043E591 /* BLECentralConnectivity.swift in Sources */,
 				1EBF73061C5BB5F30043E591 /* BLEPeripheralService.swift in Sources */,
