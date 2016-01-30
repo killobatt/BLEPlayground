@@ -21,6 +21,10 @@ class BLEPeripheralDevice: NSObject {
         self.peripheral.delegate = self
     }
     
+    deinit {
+        self.RSSIUpdateTimer?.invalidate()
+    }
+    
     private var fetchServicesCallback: (([BLEPeripheralService]) -> Void)? = nil
     func fetchServicesListWithCallback(callback:(services: [BLEPeripheralService]) -> Void) {
         self.fetchServicesCallback = callback
@@ -28,9 +32,21 @@ class BLEPeripheralDevice: NSObject {
     }
     
     
+    private var RSSIUpdateTimer: NSTimer? = nil
     private var RSSIObserveCallback: ((RSSI: NSNumber) -> Void)? = nil
     func observeRSSIWithCallback(callback:(RSSI: NSNumber) -> Void) {
         self.RSSIObserveCallback = callback
+        if let oldTimer = self.RSSIUpdateTimer {
+            oldTimer.invalidate()
+        }
+        self.RSSIUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
+            target: self,
+            selector: "updateRSSI:",
+            userInfo: nil,
+            repeats: true)
+    }
+    
+    func updateRSSI(timer: NSTimer) {
         self.peripheral.readRSSI()
     }
 }
