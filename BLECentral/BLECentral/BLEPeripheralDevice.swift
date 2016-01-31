@@ -25,12 +25,7 @@ class BLEPeripheralDevice: NSObject {
         self.RSSIUpdateTimer?.invalidate()
     }
     
-    private var fetchServicesCallback: (([BLEPeripheralService]) -> Void)? = nil
-    func fetchServicesListWithCallback(callback:(services: [BLEPeripheralService]) -> Void) {
-        self.fetchServicesCallback = callback
-        self.peripheral.discoverServices(nil)
-    }
-    
+    // MARK: - RSSI
     
     private var RSSIUpdateTimer: NSTimer? = nil
     private var RSSIObserveCallback: ((RSSI: NSNumber) -> Void)? = nil
@@ -50,6 +45,16 @@ class BLEPeripheralDevice: NSObject {
         self.peripheral.readRSSI()
     }
     
+    // MARK: - Service List
+    
+    private var fetchServicesCallback: (([BLEPeripheralService]) -> Void)? = nil
+    func fetchServicesListWithCallback(callback:(services: [BLEPeripheralService]) -> Void) {
+        self.fetchServicesCallback = callback
+        self.peripheral.discoverServices(nil)
+    }
+    
+    // MARK: - Characteristics List
+    
     typealias CharacteristicDiscoveryCallback = (service: BLEPeripheralService) -> Void
     private var characteristicsDiscoveryCallbacks: [CBUUID: CharacteristicDiscoveryCallback] = [:]
     func fetchCharacteristicsForService(service: BLEPeripheralService, withCallback callback:CharacteristicDiscoveryCallback) {
@@ -57,11 +62,37 @@ class BLEPeripheralDevice: NSObject {
         self.peripheral.discoverCharacteristics(nil, forService: service)
     }
     
+    // MARK: - Characteristic Read Value
+    
     typealias CharacteristicValueCallback = (characteristic: BLEPeripheralCharacteristic) -> Void
     private var characteristicsValueCallbacks: [CBUUID: CharacteristicValueCallback] = [:]
     func fetchValueForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicValueCallback) {
         self.characteristicsValueCallbacks[characteristic.UUID] = callback
         self.peripheral.readValueForCharacteristic(characteristic)
+    }
+    
+    // MARK: - Greedy Fetch
+    
+    func greedyFetchAllServices() {
+        self.fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
+            for service in services {
+                self.greedyFetchService(service)
+            }
+        }
+    }
+    
+    func greedyFetchService(service: BLEPeripheralService) {
+        self.fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
+            if let characteristics = service.characteristics {
+                for characteristic in characteristics {
+                    if (characteristic.properties.contains(.Read)) {
+                        self.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
+                            
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

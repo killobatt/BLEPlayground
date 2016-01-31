@@ -97,21 +97,7 @@ extension BLECentralConnectivity: CBCentralManagerDelegate {
     func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
         NSLog("Connected peripheral: \(peripheral)")
         if let device = self.discoveredDeviceForPeripheral(peripheral) {
-            device.fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
-                for service in services {
-                    device.fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
-                        if let characteristics = service.characteristics {
-                            for characteristic in characteristics {
-                                if (characteristic.properties.contains(.Read)) {
-                                    device.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            device.greedyFetchAllServices()
         } else {
             
         }
