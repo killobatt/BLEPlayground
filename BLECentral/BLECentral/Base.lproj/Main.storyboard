@@ -95,6 +95,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="UUIDLabel" destination="qqR-V7-ZQt" id="15Z-4l-Ocu"/>
+                                    <segue destination="pyH-XZ-y6i" kind="show" identifier="service" id="L5I-pw-iaN"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -107,6 +108,60 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xAa-hQ-aQg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1215" y="380"/>
+        </scene>
+        <!--Service View Controller-->
+        <scene sceneID="rvD-JK-R7B">
+            <objects>
+                <tableViewController id="pyH-XZ-y6i" customClass="ServiceViewController" customModule="BLECentral" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="82" sectionHeaderHeight="28" sectionFooterHeight="28" id="eg2-qt-BC8">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ServiceCharacteristicCell" rowHeight="60" id="Muy-Kt-id1" customClass="ServiceCharacteristicCell" customModule="BLECentral" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="600" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Muy-Kt-id1" id="MIy-qT-jF7">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="59.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oz7-Fk-40J" userLabel="UUID Label">
+                                            <rect key="frame" x="8" y="8" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J9x-Zp-k1V" userLabel="Data Label">
+                                            <rect key="frame" x="8" y="30" width="42" height="21.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="leadingMargin" secondItem="Oz7-Fk-40J" secondAttribute="leading" id="A5h-9n-HkJ"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="J9x-Zp-k1V" secondAttribute="bottom" id="Giz-rs-FdP"/>
+                                        <constraint firstItem="J9x-Zp-k1V" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="MIy-qT-jF7" secondAttribute="trailingMargin" id="Uzk-Ru-aaB"/>
+                                        <constraint firstItem="J9x-Zp-k1V" firstAttribute="top" secondItem="Oz7-Fk-40J" secondAttribute="bottom" constant="1" id="e5F-ht-1bv"/>
+                                        <constraint firstAttribute="topMargin" secondItem="Oz7-Fk-40J" secondAttribute="top" id="oRG-B5-zE2"/>
+                                        <constraint firstAttribute="leadingMargin" secondItem="J9x-Zp-k1V" secondAttribute="leading" id="uzt-eD-afm"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="UUIDLabel" destination="Oz7-Fk-40J" id="1e1-Oz-Ryn"/>
+                                    <outlet property="valueLabel" destination="J9x-Zp-k1V" id="70f-bS-3uw"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="pyH-XZ-y6i" id="c3l-48-Rkb"/>
+                            <outlet property="delegate" destination="pyH-XZ-y6i" id="eKE-UO-uqj"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3YG-Sv-9iy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1942" y="380"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="6N8-SI-Upx">

@@ -26,6 +26,17 @@ class DeviceViewController: UITableViewController {
         }
     }
     
+    // MARK: - Actions
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let serviceViewController = segue.destinationViewController as? ServiceViewController,
+            let cell = sender as? DeviceServiceCell where
+            segue.identifier == "service" {
+                serviceViewController.device = self.device
+                serviceViewController.service = cell.service
+        }
+    }
+    
     // MARK: - TableView
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

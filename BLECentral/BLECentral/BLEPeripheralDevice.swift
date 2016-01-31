@@ -49,6 +49,13 @@ class BLEPeripheralDevice: NSObject {
     func updateRSSI(timer: NSTimer) {
         self.peripheral.readRSSI()
     }
+    
+    typealias CharacteristicDiscoveryCallback = (service: BLEPeripheralService) -> Void
+    private var characteristicsCallbacks: [CBUUID: CharacteristicDiscoveryCallback] = [:]
+    func fetchCharacteristicsForService(service: BLEPeripheralService, callback:CharacteristicDiscoveryCallback) {
+        self.characteristicsCallbacks[service.UUID] = callback
+        self.peripheral.discoverCharacteristics(nil, forService: service)
+    }
 }
 
 extension BLEPeripheralDevice: CBPeripheralDelegate {
@@ -102,7 +109,7 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *
     */
     func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
-        NSLog("Peripheral: \(peripheral)\n did discover services: \(peripheral.services), error: \(error)")
+        NSLog("Peripheral: \(peripheral.name)\n did discover services: \(peripheral.services), error: \(error)")
         
         if let services = peripheral.services {
             self.services = services
@@ -135,7 +142,11 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *						they can be retrieved via <i>service</i>'s <code>characteristics</code> property.
     */
     func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
+        NSLog("Peripheral: \(peripheral.name)\n did discover characteristics: \(service.characteristics) for service: \(service.UUID.UUIDString), error: \(error)")
         
+        if let callback = self.characteristicsCallbacks[service.UUID] {
+            callback(service: service)
+        }
     }
     
     /*!

@@ -10,6 +10,9 @@ import Foundation
 import CoreBluetooth
 
 typealias BLEPeripheralService = CBService
+
+typealias BLEPeripheralCharacteristic = CBCharacteristic
+
 //class BLEPeripheralService: NSObject {
 //
 //    private(set) var service: CBService
