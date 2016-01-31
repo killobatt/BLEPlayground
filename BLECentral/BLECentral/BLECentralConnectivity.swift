@@ -34,11 +34,24 @@ class BLECentralConnectivity: NSObject {
     }
     
     func connectDevice(device: BLEPeripheralDevice) {
-        self.centralManager.connectPeripheral(device.peripheral, options: nil)
+        if (device.peripheral.state == .Disconnected) {
+            self.centralManager.connectPeripheral(device.peripheral, options: nil)
+        }
     }
     
     func disconnectDevice(device: BLEPeripheralDevice) {
         self.centralManager.cancelPeripheralConnection(device.peripheral)
+    }
+    
+    
+    // MARK: - Utility
+    private func discoveredDeviceForPeripheral(peripheral: CBPeripheral) -> BLEPeripheralDevice? {
+        let discoveredPeripherals = self.discoveredDevices.map { $0.peripheral }
+        if let index = discoveredPeripherals.indexOf(peripheral) {
+            return self.discoveredDevices[index]
+        } else {
+            return nil
+        }
     }
 }
 
@@ -70,9 +83,7 @@ extension BLECentralConnectivity: CBCentralManagerDelegate {
     
     func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
         NSLog("Did discover peripheral: \(peripheral)\n advertisement data: \(advertisementData)\n RSSI: \(RSSI)")
-        let discoveredPeripherals = self.discoveredDevices.map { $0.peripheral }
-        if let index = discoveredPeripherals.indexOf(peripheral) {
-            let device = self.discoveredDevices[index]
+        if let device = self.discoveredDeviceForPeripheral(peripheral) {
             device.RSSI = RSSI
             self.discoveredDeviceCallback?(device)
         } else {
@@ -85,6 +96,25 @@ extension BLECentralConnectivity: CBCentralManagerDelegate {
     
     func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
         NSLog("Connected peripheral: \(peripheral)")
+        if let device = self.discoveredDeviceForPeripheral(peripheral) {
+            device.fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
+                for service in services {
+                    device.fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
+                        if let characteristics = service.characteristics {
+                            for characteristic in characteristics {
+                                if (characteristic.properties.contains(.Read)) {
+                                    device.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            
+        }
     }
     
     func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {

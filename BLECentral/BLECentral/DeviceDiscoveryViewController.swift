@@ -24,6 +24,7 @@ class DeviceDiscoveryViewController: UITableViewController {
     
     @IBAction func scanPressed(sender: AnyObject) {
         self.centralConnectivity.scanForDevicesWithCallback { (newDevice) -> Void in
+            self.centralConnectivity.connectDevice(newDevice)
             self.tableView.reloadData()
         }
     }
@@ -46,13 +47,6 @@ class DeviceDiscoveryViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("DeviceDiscoveryTableViewCell", forIndexPath: indexPath) as! DeviceDiscoveryTableViewCell
         cell.device = self.centralConnectivity.discoveredDevices[indexPath.row]
         return cell
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let device = self.centralConnectivity.discoveredDevices[indexPath.row]
-        if (device.peripheral.state == .Disconnected) {
-            self.centralConnectivity.connectDevice(device)
-        }
     }
     
 }

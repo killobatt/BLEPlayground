@@ -51,10 +51,17 @@ class BLEPeripheralDevice: NSObject {
     }
     
     typealias CharacteristicDiscoveryCallback = (service: BLEPeripheralService) -> Void
-    private var characteristicsCallbacks: [CBUUID: CharacteristicDiscoveryCallback] = [:]
-    func fetchCharacteristicsForService(service: BLEPeripheralService, callback:CharacteristicDiscoveryCallback) {
-        self.characteristicsCallbacks[service.UUID] = callback
+    private var characteristicsDiscoveryCallbacks: [CBUUID: CharacteristicDiscoveryCallback] = [:]
+    func fetchCharacteristicsForService(service: BLEPeripheralService, withCallback callback:CharacteristicDiscoveryCallback) {
+        self.characteristicsDiscoveryCallbacks[service.UUID] = callback
         self.peripheral.discoverCharacteristics(nil, forService: service)
+    }
+    
+    typealias CharacteristicValueCallback = (characteristic: BLEPeripheralCharacteristic) -> Void
+    private var characteristicsValueCallbacks: [CBUUID: CharacteristicValueCallback] = [:]
+    func fetchValueForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicValueCallback) {
+        self.characteristicsValueCallbacks[characteristic.UUID] = callback
+        self.peripheral.readValueForCharacteristic(characteristic)
     }
 }
 
@@ -144,7 +151,7 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
         NSLog("Peripheral: \(peripheral.name)\n did discover characteristics: \(service.characteristics) for service: \(service.UUID.UUIDString), error: \(error)")
         
-        if let callback = self.characteristicsCallbacks[service.UUID] {
+        if let callback = self.characteristicsDiscoveryCallbacks[service.UUID] {
             callback(service: service)
         }
     }
@@ -160,6 +167,9 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     */
     func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
         
+        if let callback = self.characteristicsValueCallbacks[characteristic.UUID] {
+            callback(characteristic: characteristic)
+        }
     }
     
     /*!

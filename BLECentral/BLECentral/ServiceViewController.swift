@@ -38,6 +38,7 @@ class ServiceViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("ServiceCharacteristicCell", forIndexPath: indexPath) as! ServiceCharacteristicCell
+        cell.device = self.device
         cell.characteristic = self.service?.characteristics?[indexPath.row]
         return cell
     }
