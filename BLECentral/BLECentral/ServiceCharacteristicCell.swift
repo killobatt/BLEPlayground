@@ -28,7 +28,11 @@ class ServiceCharacteristicCell: UITableViewCell {
 
     private func setCharacteristicValue(value: NSData?) {
         if let value = value {
-            self.valueLabel.text = NSString(data: value, encoding: NSUTF8StringEncoding) as? String
+            if let object = NSKeyedUnarchiver.unarchiveObjectWithData(value) {
+                self.valueLabel.text = object.description
+            } else {
+                self.valueLabel.text = NSString(data: value, encoding: NSUTF8StringEncoding) as? String
+            }
         }
     }
 

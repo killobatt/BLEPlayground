@@ -113,13 +113,13 @@
         <scene sceneID="rvD-JK-R7B">
             <objects>
                 <tableViewController id="pyH-XZ-y6i" customClass="ServiceViewController" customModule="BLECentral" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="82" sectionHeaderHeight="28" sectionFooterHeight="28" id="eg2-qt-BC8">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="82" sectionHeaderHeight="18" sectionFooterHeight="18" id="eg2-qt-BC8">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ServiceCharacteristicCell" rowHeight="60" id="Muy-Kt-id1" customClass="ServiceCharacteristicCell" customModule="BLECentral" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="92" width="600" height="60"/>
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Muy-Kt-id1" id="MIy-qT-jF7">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="59.5"/>
@@ -150,6 +150,29 @@
                                 <connections>
                                     <outlet property="UUIDLabel" destination="Oz7-Fk-40J" id="1e1-Oz-Ryn"/>
                                     <outlet property="valueLabel" destination="J9x-Zp-k1V" id="70f-bS-3uw"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceServiceCell" rowHeight="74" id="KMo-xx-9pC" userLabel="Device Service Cell" customClass="DeviceServiceCell" customModule="BLECentral" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="173.5" width="600" height="74"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KMo-xx-9pC" id="j7H-RQ-Yse">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="73.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="97o-RC-qHp" userLabel="UUID Label">
+                                            <rect key="frame" x="8" y="26" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="97o-RC-qHp" firstAttribute="centerY" secondItem="j7H-RQ-Yse" secondAttribute="centerY" id="G8f-RE-tZJ"/>
+                                        <constraint firstAttribute="leadingMargin" secondItem="97o-RC-qHp" secondAttribute="leading" id="Xwz-83-vUc"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="UUIDLabel" destination="97o-RC-qHp" id="afG-Qp-hNu"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

@@ -32,14 +32,46 @@ class ServiceViewController: UITableViewController {
     
     // MARK: - TableView
     
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 3
+    }
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.service?.characteristics?.count ?? 0
+        if section == 0 {
+            return 1
+        } else if section == 1 {
+            return self.service?.includedServices?.count ?? 0
+        } else if section == 2 {
+            return self.service?.characteristics?.count ?? 0
+        } else {
+            return 0
+        }
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ServiceCharacteristicCell", forIndexPath: indexPath) as! ServiceCharacteristicCell
-        cell.device = self.device
-        cell.characteristic = self.service?.characteristics?[indexPath.row]
-        return cell
+        if indexPath.section == 1 || indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCellWithIdentifier("DeviceServiceCell", forIndexPath: indexPath) as! DeviceServiceCell
+            if (indexPath.section == 0) {
+                cell.service = self.service
+            } else {
+                cell.service = self.service?.includedServices?[indexPath.row]
+            }
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("ServiceCharacteristicCell", forIndexPath: indexPath) as! ServiceCharacteristicCell
+            cell.device = self.device
+            cell.characteristic = self.service?.characteristics?[indexPath.row]
+            return cell
+        }
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Service"
+        } else if section == 1 {
+            return "Included services"
+        } else {
+            return "Characteristics"
+        }
     }
 }

@@ -47,10 +47,19 @@ class BLEPeripheralDevice: NSObject {
     
     // MARK: - Service List
     
-    private var fetchServicesCallback: (([BLEPeripheralService]) -> Void)? = nil
-    func fetchServicesListWithCallback(callback:(services: [BLEPeripheralService]) -> Void) {
+    typealias FetchServicesCallback = ([BLEPeripheralService]) -> Void
+    private var fetchServicesCallback: FetchServicesCallback? = nil
+    func fetchServicesListWithCallback(callback:FetchServicesCallback) {
         self.fetchServicesCallback = callback
         self.peripheral.discoverServices(nil)
+    }
+    
+    // MARK: - Service List
+    
+    private var fetchIncludedServicesCallbacks: [CBUUID: FetchServicesCallback] = [:]
+    func fetchIncludedServicesForService(service:BLEPeripheralService, withCallback callback:FetchServicesCallback) {
+        self.fetchIncludedServicesCallbacks[service.UUID] = callback
+        self.peripheral.discoverIncludedServices(nil, forService: service)
     }
     
     // MARK: - Characteristics List
@@ -91,6 +100,12 @@ class BLEPeripheralDevice: NSObject {
                         }
                     }
                 }
+            }
+        }
+        
+        self.fetchIncludedServicesForService(service) { (services: [BLEPeripheralService]) -> Void in
+            for includedService in services {
+                self.greedyFetchService(includedService)
             }
         }
     }
@@ -166,7 +181,12 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *						they can be retrieved via <i>service</i>'s <code>includedServices</code> property.
     */
     func peripheral(peripheral: CBPeripheral, didDiscoverIncludedServicesForService service: CBService, error: NSError?) {
+        NSLog("Peripheral: \(peripheral.name)\n service: \(service.UUID.UUIDString)  did discover included services: \(service.includedServices)")
         
+        if let callback = self.fetchIncludedServicesCallbacks[service.UUID],
+            includedServices = service.includedServices {
+            callback(includedServices)
+        }
     }
     
     /*!
