@@ -31,7 +31,12 @@ class BLEPeripheralConnectivity: NSObject {
         let allServiceUUIDs = self.services.map { (_: CBUUID, service: CBMutableService) -> CBUUID in
             return service.UUID!
         }
-        self.peripheralManager.startAdvertising([CBAdvertisementDataServiceUUIDsKey : allServiceUUIDs])
+        let advertisingData = [
+            CBAdvertisementDataLocalNameKey : "BLEPeripheral",
+            CBAdvertisementDataServiceUUIDsKey : allServiceUUIDs
+        ] as [String: AnyObject]
+        
+        self.peripheralManager.startAdvertising(advertisingData)
         NSLog("Starting advertising services: \(allServiceUUIDs.map { $0.UUIDString })")
     }
     
@@ -71,6 +76,7 @@ extension BLEPeripheralConnectivity: CBPeripheralManagerDelegate {
             NSLog("Peripheral manager update state to: PoweredOff")
         case .PoweredOn:
             NSLog("Peripheral manager update state to: PoweredOn")
+            self.startAdvertising()
         }
     }
     

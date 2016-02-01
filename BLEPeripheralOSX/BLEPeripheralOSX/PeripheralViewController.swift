@@ -21,19 +21,21 @@ class PeripheralWindowController: NSWindowController {
         
         let characteristicType = CBUUID(string: "414737A1-E2C5-4EF9-9FF2-0F682D892733")
         let timeCharacteristic = CBMutableCharacteristic(type: characteristicType,
-            properties: [.Read, .Notify],
+            properties: [.Read],
             value: nil, permissions: [.Readable])
+        let value = NSKeyedArchiver.archivedDataWithRootObject(NSDate())
+        timeCharacteristic.value = value
         
         let serviceType = CBUUID(string: "F6ED52C6-8B8D-404A-B54E-30DCDDB86238")
-        let service = CBMutableService(type: serviceType, primary: false)
+        let service = CBMutableService(type: serviceType, primary: true)
         service.characteristics = [timeCharacteristic]
         
         self.bluetoothEngine?.addService(service)
-        self.bluetoothEngine?.startAdvertising()
         
-        let value = NSKeyedArchiver.archivedDataWithRootObject(NSDate())
-        timeCharacteristic.value = value
     }
 
+    deinit {
+        NSLog("PeripheralWindowController Deinit")
+    }
 }
 
