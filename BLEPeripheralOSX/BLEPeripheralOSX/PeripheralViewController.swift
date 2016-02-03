@@ -19,16 +19,23 @@ class PeripheralWindowController: NSWindowController {
 
         self.bluetoothEngine = BLEPeripheralConnectivity()
         
+        
+        let launchTimeCharacteristicUserDescriptorUUID = CBUUID(string: CBUUIDCharacteristicUserDescriptionString)
+        let launchTimeCharacteristicUserDescriptorValue = "Launch time"
+        let launchTimeCharacteristicUserDescriptor = CBMutableDescriptor(type: launchTimeCharacteristicUserDescriptorUUID,
+            value: launchTimeCharacteristicUserDescriptorValue)
+        
         let characteristicType = CBUUID(string: "414737A1-E2C5-4EF9-9FF2-0F682D892733")
-        let timeCharacteristic = CBMutableCharacteristic(type: characteristicType,
+        let launchTimeCharacteristic = CBMutableCharacteristic(type: characteristicType,
             properties: [.Read],
             value: nil, permissions: [.Readable])
-        let value = NSKeyedArchiver.archivedDataWithRootObject(NSDate())
-        timeCharacteristic.value = value
+        launchTimeCharacteristic.value = NSKeyedArchiver.archivedDataWithRootObject(NSDate())
+        launchTimeCharacteristic.descriptors = [launchTimeCharacteristicUserDescriptor]
+        
         
         let serviceType = CBUUID(string: "F6ED52C6-8B8D-404A-B54E-30DCDDB86238")
         let service = CBMutableService(type: serviceType, primary: true)
-        service.characteristics = [timeCharacteristic]
+        service.characteristics = [launchTimeCharacteristic]
         
         self.bluetoothEngine?.addService(service)
         

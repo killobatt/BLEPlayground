@@ -150,6 +150,7 @@
                                 <connections>
                                     <outlet property="UUIDLabel" destination="Oz7-Fk-40J" id="1e1-Oz-Ryn"/>
                                     <outlet property="valueLabel" destination="J9x-Zp-k1V" id="70f-bS-3uw"/>
+                                    <segue destination="2ZZ-ne-McO" kind="show" identifier="characteristic" id="Frx-CB-A7x"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceServiceCell" rowHeight="74" id="KMo-xx-9pC" userLabel="Device Service Cell" customClass="DeviceServiceCell" customModule="BLECentral" customModuleProvider="target">
@@ -185,6 +186,61 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3YG-Sv-9iy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1942" y="380"/>
+        </scene>
+        <!--Characteristic View Controller-->
+        <scene sceneID="bFf-0Z-M4G">
+            <objects>
+                <tableViewController id="2ZZ-ne-McO" customClass="CharacteristicViewController" customModule="BLECentral" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="70" sectionHeaderHeight="18" sectionFooterHeight="18" id="5oq-qM-nRQ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CharacteristicDescriptorCell" rowHeight="70" id="mNh-AI-ACr" userLabel="CharacteristicDescriptorCell" customClass="CharacteristicDescriptorCell" customModule="BLECentral" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="70"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mNh-AI-ACr" id="Lkx-Wc-YY6">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="69.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zex-ay-SkF">
+                                            <rect key="frame" x="8" y="37" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w9F-ap-pyL">
+                                            <rect key="frame" x="8" y="8" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="w9F-ap-pyL" firstAttribute="top" secondItem="Lkx-Wc-YY6" secondAttribute="topMargin" id="16y-e7-au0"/>
+                                        <constraint firstItem="Zex-ay-SkF" firstAttribute="leading" secondItem="w9F-ap-pyL" secondAttribute="leading" id="GMV-EJ-i97"/>
+                                        <constraint firstItem="Zex-ay-SkF" firstAttribute="top" secondItem="w9F-ap-pyL" secondAttribute="bottom" constant="8" id="HYK-f7-pLK"/>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="w9F-ap-pyL" secondAttribute="trailing" id="Hma-4q-FDX"/>
+                                        <constraint firstItem="w9F-ap-pyL" firstAttribute="leading" secondItem="Lkx-Wc-YY6" secondAttribute="leadingMargin" id="XOD-id-f2R"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Zex-ay-SkF" secondAttribute="bottom" constant="3.5" id="mPO-TS-UrW"/>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="Zex-ay-SkF" secondAttribute="trailing" id="qbM-Wr-ntk"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="UUIDLabel" destination="w9F-ap-pyL" id="469-LG-5Uo"/>
+                                    <outlet property="valueLabel" destination="Zex-ay-SkF" id="zzm-vY-rD0"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="2ZZ-ne-McO" id="t6q-Jt-qOg"/>
+                            <outlet property="delegate" destination="2ZZ-ne-McO" id="0vs-Dh-0oh"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hTU-jY-2JZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2665" y="380"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="6N8-SI-Upx">

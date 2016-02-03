@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E7A28121C60E4A40003DEBF /* CharacteristicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7A28111C60E4A40003DEBF /* CharacteristicViewController.swift */; };
+		1E7A28141C60E7820003DEBF /* CharacteristicDescriptorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7A28131C60E7820003DEBF /* CharacteristicDescriptorCell.swift */; };
 		1EBF72781C5AC0320043E591 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF72771C5AC0320043E591 /* AppDelegate.swift */; };
 		1EBF727D1C5AC0320043E591 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1EBF727B1C5AC0320043E591 /* Main.storyboard */; };
 		1EBF727F1C5AC0320043E591 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1EBF727E1C5AC0320043E591 /* Assets.xcassets */; };
@@ -44,6 +46,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E7A28111C60E4A40003DEBF /* CharacteristicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicViewController.swift; sourceTree = "<group>"; };
+		1E7A28131C60E7820003DEBF /* CharacteristicDescriptorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicDescriptorCell.swift; sourceTree = "<group>"; };
 		1EBF72741C5AC0320043E591 /* BLECentral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLECentral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EBF72771C5AC0320043E591 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1EBF727C1C5AC0320043E591 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -127,6 +131,8 @@
 				1EBF73131C5BE75B0043E591 /* DeviceServiceCell.swift */,
 				1EBF73151C5D27D40043E591 /* ServiceViewController.swift */,
 				1EBF73171C5D27E90043E591 /* ServiceCharacteristicCell.swift */,
+				1E7A28111C60E4A40003DEBF /* CharacteristicViewController.swift */,
+				1E7A28131C60E7820003DEBF /* CharacteristicDescriptorCell.swift */,
 				1EBF727B1C5AC0320043E591 /* Main.storyboard */,
 				1EBF727E1C5AC0320043E591 /* Assets.xcassets */,
 				1EBF72801C5AC0320043E591 /* LaunchScreen.storyboard */,
@@ -291,6 +297,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E7A28121C60E4A40003DEBF /* CharacteristicViewController.swift in Sources */,
 				1EBF73181C5D27E90043E591 /* ServiceCharacteristicCell.swift in Sources */,
 				1EBF72781C5AC0320043E591 /* AppDelegate.swift in Sources */,
 				1EBF73121C5BE74F0043E591 /* DeviceViewController.swift in Sources */,
@@ -299,6 +306,7 @@
 				1EBF72A81C5AC0EB0043E591 /* DeviceDiscoveryTableViewCell.swift in Sources */,
 				1EBF73081C5BB69F0043E591 /* BLECentralConnectivity.swift in Sources */,
 				1EBF73061C5BB5F30043E591 /* BLEPeripheralService.swift in Sources */,
+				1E7A28141C60E7820003DEBF /* CharacteristicDescriptorCell.swift in Sources */,
 				1EBF73041C5BB5C90043E591 /* BLEPeripheralDevice.swift in Sources */,
 				1EBF73161C5D27D40043E591 /* ServiceViewController.swift in Sources */,
 			);

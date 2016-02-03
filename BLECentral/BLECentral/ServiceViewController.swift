@@ -30,6 +30,17 @@ class ServiceViewController: UITableViewController {
         }
     }
     
+    // MARK: - Actions
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let serviceViewController = segue.destinationViewController as? CharacteristicViewController,
+            let cell = sender as? ServiceCharacteristicCell where
+            segue.identifier == "characteristic" {
+                serviceViewController.device = self.device
+                serviceViewController.characteristic = cell.characteristic
+        }
+    }
+    
     // MARK: - TableView
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

@@ -80,6 +80,22 @@ class BLEPeripheralDevice: NSObject {
         self.peripheral.readValueForCharacteristic(characteristic)
     }
     
+    // MARK: - Characteristic Descriptors
+    
+    typealias CharacteristicDescriptorsCallback = (characteristic: BLEPeripheralCharacteristic) -> Void
+    private var characteristicsDescriptorsCallbacks: [CBUUID: CharacteristicDescriptorsCallback] = [:]
+    func fetchDescriptorsForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicDescriptorsCallback) {
+        self.characteristicsDescriptorsCallbacks[characteristic.UUID] = callback
+        self.peripheral.discoverDescriptorsForCharacteristic(characteristic)
+    }
+    
+    typealias CharacteristicDescriptorsValueCallback = (descriptor: BLEDescriptor) -> Void
+    private var characteristicsDescriptorsValueCallbacks: [CBUUID: CharacteristicDescriptorsValueCallback] = [:]
+    func fetchValueForDescriptor(descriptor: BLEDescriptor, withCallback callback: CharacteristicDescriptorsValueCallback) {
+        self.characteristicsDescriptorsValueCallbacks[descriptor.UUID] = callback
+        self.peripheral.readValueForDescriptor(descriptor)
+    }
+    
     // MARK: - Greedy Fetch
     
     func greedyFetchAllServices() {
@@ -99,6 +115,7 @@ class BLEPeripheralDevice: NSObject {
                             
                         }
                     }
+                    self.greedyFetchDescriptorsForCharacteristic(characteristic)
                 }
             }
         }
@@ -109,7 +126,21 @@ class BLEPeripheralDevice: NSObject {
             }
         }
     }
+    
+    func greedyFetchDescriptorsForCharacteristic(characteristic: BLEPeripheralCharacteristic) {
+        self.fetchDescriptorsForCharacteristic(characteristic) { (characteristic) -> Void in
+            if let descriptors = characteristic.descriptors {
+                for descriptor in descriptors {
+                    self.fetchValueForDescriptor(descriptor) { (descriptor) -> Void in
+                        
+                    }
+                }
+            }
+        }
+    }
 }
+
+
 
 extension BLEPeripheralDevice: CBPeripheralDelegate {
     /*!
@@ -260,7 +291,9 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *							they can be retrieved via <i>characteristic</i>'s <code>descriptors</code> property.
     */
     func peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
-        
+        if let callback = self.characteristicsDescriptorsCallbacks[characteristic.UUID] {
+            callback(characteristic: characteristic)
+        }
     }
     
     /*!
@@ -273,7 +306,9 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @discussion				This method returns the result of a @link readValueForDescriptor: @/link call.
     */
     func peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor descriptor: CBDescriptor, error: NSError?) {
-        
+        if let callback = self.characteristicsDescriptorsValueCallbacks[descriptor.UUID] {
+            callback(descriptor: descriptor)
+        }
     }
     
     /*!
