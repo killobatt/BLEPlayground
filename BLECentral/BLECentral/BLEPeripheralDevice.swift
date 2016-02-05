@@ -22,19 +22,20 @@ class BLEPeripheralDevice: NSObject {
     }
     
     deinit {
-        self.RSSIUpdateTimer?.invalidate()
+        self.rssiUpdateTimer?.invalidate()
     }
     
     // MARK: - RSSI
     
-    private var RSSIUpdateTimer: NSTimer? = nil
-    private var RSSIObserveCallback: ((RSSI: NSNumber) -> Void)? = nil
-    func observeRSSIWithCallback(callback:(RSSI: NSNumber) -> Void) {
-        self.RSSIObserveCallback = callback
-        if let oldTimer = self.RSSIUpdateTimer {
+    typealias RSSIObserveCallbackType = (RSSI: NSNumber?) -> Void
+    private var rssiUpdateTimer: NSTimer? = nil
+    private var rssiObserveCallback: RSSIObserveCallbackType? = nil
+    func observeRSSIWithCallback(callback: RSSIObserveCallbackType) {
+        self.rssiObserveCallback = callback
+        if let oldTimer = self.rssiUpdateTimer {
             oldTimer.invalidate()
         }
-        self.RSSIUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
+        self.rssiUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
             target: self,
             selector: "updateRSSI:",
             userInfo: nil,
@@ -49,7 +50,7 @@ class BLEPeripheralDevice: NSObject {
     
     typealias FetchServicesCallback = ([BLEPeripheralService]) -> Void
     private var fetchServicesCallback: FetchServicesCallback? = nil
-    func fetchServicesListWithCallback(callback:FetchServicesCallback) {
+    func fetchServicesListWithCallback(callback: FetchServicesCallback) {
         self.fetchServicesCallback = callback
         self.peripheral.discoverServices(nil)
     }
@@ -57,7 +58,8 @@ class BLEPeripheralDevice: NSObject {
     // MARK: - Service List
     
     private var fetchIncludedServicesCallbacks: [CBUUID: FetchServicesCallback] = [:]
-    func fetchIncludedServicesForService(service:BLEPeripheralService, withCallback callback:FetchServicesCallback) {
+    func fetchIncludedServicesForService(service: BLEPeripheralService,
+        withCallback callback: FetchServicesCallback) {
         self.fetchIncludedServicesCallbacks[service.UUID] = callback
         self.peripheral.discoverIncludedServices(nil, forService: service)
     }
@@ -66,7 +68,7 @@ class BLEPeripheralDevice: NSObject {
     
     typealias CharacteristicDiscoveryCallback = (service: BLEPeripheralService) -> Void
     private var characteristicsDiscoveryCallbacks: [CBUUID: CharacteristicDiscoveryCallback] = [:]
-    func fetchCharacteristicsForService(service: BLEPeripheralService, withCallback callback:CharacteristicDiscoveryCallback) {
+    func fetchCharacteristicsForService(service: BLEPeripheralService, withCallback callback: CharacteristicDiscoveryCallback) {
         self.characteristicsDiscoveryCallbacks[service.UUID] = callback
         self.peripheral.discoverCharacteristics(nil, forService: service)
     }
@@ -78,6 +80,14 @@ class BLEPeripheralDevice: NSObject {
     func fetchValueForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicValueCallback) {
         self.characteristicsValueCallbacks[characteristic.UUID] = callback
         self.peripheral.readValueForCharacteristic(characteristic)
+    }
+    
+    // MARK: - Characteristic Observe Value
+    
+    private var characteristicsValueObserveCallbacks: [CBUUID: CharacteristicValueCallback] = [:]
+    func observeValueForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicValueCallback) {
+        self.characteristicsValueObserveCallbacks[characteristic.UUID] = callback
+        self.peripheral.setNotifyValue(true, forCharacteristic: characteristic)
     }
     
     // MARK: - Characteristic Descriptors
@@ -110,9 +120,8 @@ class BLEPeripheralDevice: NSObject {
         self.fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
             if let characteristics = service.characteristics {
                 for characteristic in characteristics {
-                    if (characteristic.properties.contains(.Read)) {
+                    if characteristic.properties.contains(.Read) {
                         self.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
-                            
                         }
                     }
                     self.greedyFetchDescriptorsForCharacteristic(characteristic)
@@ -179,7 +188,7 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     */
     func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
         self.RSSI = RSSI
-        self.RSSIObserveCallback?(RSSI: RSSI)
+        self.rssiObserveCallback?(RSSI: RSSI)
     }
     
     /*!
@@ -250,6 +259,9 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
         
         if let callback = self.characteristicsValueCallbacks[characteristic.UUID] {
+            callback(characteristic: characteristic)
+        }
+        if let callback = self.characteristicsValueObserveCallbacks[characteristic.UUID] {
             callback(characteristic: characteristic)
         }
     }

@@ -44,10 +44,11 @@ class DeviceDiscoveryViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DeviceDiscoveryTableViewCell", forIndexPath: indexPath) as! DeviceDiscoveryTableViewCell
-        cell.device = self.centralConnectivity.discoveredDevices[indexPath.row]
+        let cell = tableView.dequeueReusableCellWithIdentifier("DeviceDiscoveryTableViewCell", forIndexPath: indexPath)
+        if let cell = cell as? DeviceDiscoveryTableViewCell {
+            cell.device = self.centralConnectivity.discoveredDevices[indexPath.row]
+        }
         return cell
     }
     
 }
-

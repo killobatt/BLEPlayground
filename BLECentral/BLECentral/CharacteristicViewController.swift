@@ -9,24 +9,31 @@
 import UIKit
 
 class CharacteristicViewController: UITableViewController {
-    
+
     var device: BLEPeripheralDevice? = nil {
         didSet {
             self.navigationItem.title = device?.peripheral.name
         }
     }
-    
+
     var characteristic: BLEPeripheralCharacteristic? = nil {
         didSet {
             self.tableView.reloadData()
+            if let characteristic = self.characteristic where characteristic.properties.contains(.Notify) {
+                self.device?.observeValueForCharacteristic(characteristic) { (characteristic) -> Void in
+                    self.device?.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
+                        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+                    }
+                }
+            }
         }
     }
-    
-    // MARK: - ViewController
-    
+
+// MARK: - ViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if let characteristic = self.characteristic {
             self.device?.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
                 self.device?.fetchDescriptorsForCharacteristic(characteristic) { (characteristic) -> Void in
@@ -43,9 +50,9 @@ class CharacteristicViewController: UITableViewController {
             }
         }
     }
-    
+
 //    // MARK: - Actions
-//    
+//
 //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 //        if let serviceViewController = segue.destinationViewController as? ServiceViewController,
 //            let cell = sender as? DeviceServiceCell where
@@ -54,13 +61,13 @@ class CharacteristicViewController: UITableViewController {
 //                serviceViewController.service = cell.service
 //        }
 //    }
-    
+
     // MARK: - TableView
-    
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
-    
+
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 3
@@ -68,7 +75,7 @@ class CharacteristicViewController: UITableViewController {
             return self.characteristic?.descriptors?.count ?? 0
         }
     }
-    
+
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let reuseID = "PropertyCell"
@@ -77,32 +84,32 @@ class CharacteristicViewController: UITableViewController {
                 cell = UITableViewCell(style: UITableViewCellStyle.Value2, reuseIdentifier: reuseID)
             }
 
-            if (indexPath.row == 0) {
+            if indexPath.row == 0 {
                 cell?.textLabel?.text = "UUID"
                 cell?.detailTextLabel?.text = self.characteristic?.UUID.UUIDString
-            } else if (indexPath.row == 1) {
+            } else if indexPath.row == 1 {
                 cell?.textLabel?.text = "Raw value"
                 cell?.detailTextLabel?.text = self.characteristic?.value?.description
-            } else if (indexPath.row == 2) {
+            } else if indexPath.row == 2 {
                 cell?.textLabel?.text = "Value"
                 cell?.detailTextLabel?.text = self.characteristic?.value?.stringRepresentation()
             }
-            
+
             return cell!
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("CharacteristicDescriptorCell", forIndexPath: indexPath) as! CharacteristicDescriptorCell
-            cell.device = self.device
-            cell.descriptor = self.characteristic?.descriptors?[indexPath.row]
+            let cell = tableView.dequeueReusableCellWithIdentifier("CharacteristicDescriptorCell", forIndexPath: indexPath)
+            if let cell = cell as? CharacteristicDescriptorCell {
+                cell.device = self.device
+                cell.descriptor = self.characteristic?.descriptors?[indexPath.row]
+            }
             return cell
         }
     }
 
-    
-    
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
             return "Characteristic"
-        } else  {
+        } else {
             return "Descriptors"
         }
     }

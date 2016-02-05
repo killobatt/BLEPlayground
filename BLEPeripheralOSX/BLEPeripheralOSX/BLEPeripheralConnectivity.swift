@@ -15,6 +15,8 @@ class BLEPeripheralConnectivity: NSObject {
     private var peripheralManager: CBPeripheralManager! = nil
     private var services: [CBUUID: CBMutableService] = [:]
     
+    private var subscribedCentrals: [CBUUID: [CBCentral]] = [:]
+    
     override init() {
         super.init()
         self.peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
@@ -45,6 +47,14 @@ class BLEPeripheralConnectivity: NSObject {
         NSLog("Stopped advertising")
     }
     
+    func notifySubscribersForCharacteristic(characteristic: CBMutableCharacteristic) {
+        if let centrals = self.subscribedCentrals[characteristic.UUID!],
+            data = characteristic.value {
+                self.peripheralManager.updateValue(data,
+                    forCharacteristic: characteristic,
+                    onSubscribedCentrals: centrals)
+        }
+    }
 }
 
 extension BLEPeripheralConnectivity: CBPeripheralManagerDelegate {
@@ -142,7 +152,13 @@ extension BLEPeripheralConnectivity: CBPeripheralManagerDelegate {
     *
     */
     func peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didSubscribeToCharacteristic characteristic: CBCharacteristic) {
-        
+        NSLog("Central: \(central.identifier.UUIDString) did subscribe to characteristic: \(characteristic.UUID.UUIDString)")
+        if var centrals = self.subscribedCentrals[characteristic.UUID] {
+            centrals.append(central)
+            self.subscribedCentrals[characteristic.UUID] = centrals
+        } else {
+            self.subscribedCentrals[characteristic.UUID] = [central]
+        }
     }
     
     /*!
@@ -156,7 +172,18 @@ extension BLEPeripheralConnectivity: CBPeripheralManagerDelegate {
     *
     */
     func peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFromCharacteristic characteristic: CBCharacteristic) {
-        
+        NSLog("Central: \(central.identifier.UUIDString) did unsubscribe from characteristic: \(characteristic.UUID.UUIDString)")
+        if var centrals = self.subscribedCentrals[characteristic.UUID],
+            let index = centrals.indexOf(central) {
+                centrals.removeAtIndex(index)
+                if (centrals.count > 0) {
+                    self.subscribedCentrals.removeValueForKey(characteristic.UUID)
+                } else {
+                    self.subscribedCentrals[characteristic.UUID] = centrals
+                }
+        } else {
+            self.subscribedCentrals.removeValueForKey(characteristic.UUID)
+        }
     }
     
     /*!
@@ -173,8 +200,8 @@ extension BLEPeripheralConnectivity: CBPeripheralManagerDelegate {
     */
     func peripheralManager(peripheral: CBPeripheralManager, didReceiveReadRequest request: CBATTRequest) {
         NSLog("Got read request for characteristic: \(request.characteristic.UUID.UUIDString) of service: \(request.characteristic.service.UUID.UUIDString)")
-        guard request.offset > request.characteristic.value?.length else {
-            NSLog("Read request failed: invalid offset")
+        guard request.offset <= request.characteristic.value?.length else {
+            NSLog("Read request failed: invalid offset \(request.offset)")
             self.peripheralManager.respondToRequest(request, withResult: CBATTError.InvalidOffset)
             return
         }

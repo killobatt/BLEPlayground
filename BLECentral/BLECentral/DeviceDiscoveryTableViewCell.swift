@@ -15,8 +15,10 @@ class DeviceDiscoveryTableViewCell: UITableViewCell {
             if let device = self.device {
                 self.nameLabel.text = device.peripheral.name
                 self.RSSILabel.text = "\(device.RSSI) db"
-                device.observeRSSIWithCallback { [weak self] (RSSI) -> Void in
-                    self?.RSSILabel.text = "\(RSSI) db"
+                device.observeRSSIWithCallback { [weak self] (RSSI: NSNumber?) -> Void in
+                    if let RSSI = RSSI {
+                        self?.RSSILabel.text = "\(RSSI) db"
+                    }
                 }
             } else {
                 self.nameLabel.text = ""
@@ -28,8 +30,8 @@ class DeviceDiscoveryTableViewCell: UITableViewCell {
     // MARK: - IBOutlets
     
     @IBOutlet weak var nameLabel: UILabel!
+    // swiftlint:disable variable_name
     @IBOutlet weak var RSSILabel: UILabel!
-    
-    
+    // swiftlint:enable variable_name
     
 }

@@ -44,8 +44,10 @@ class DeviceViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DeviceServiceCell", forIndexPath: indexPath) as! DeviceServiceCell
-        cell.service = self.device?.services[indexPath.row]
+        let cell = tableView.dequeueReusableCellWithIdentifier("DeviceServiceCell", forIndexPath: indexPath)
+        if let cell = cell as? DeviceServiceCell {
+            cell.service = self.device?.services[indexPath.row]
+        }
         return cell
     }
     

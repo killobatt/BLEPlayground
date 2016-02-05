@@ -61,17 +61,23 @@ class ServiceViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 1 || indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("DeviceServiceCell", forIndexPath: indexPath) as! DeviceServiceCell
-            if (indexPath.section == 0) {
-                cell.service = self.service
-            } else {
-                cell.service = self.service?.includedServices?[indexPath.row]
+            let cell = tableView.dequeueReusableCellWithIdentifier("DeviceServiceCell",
+                forIndexPath: indexPath)
+            if let cell = cell as? DeviceServiceCell {
+                if indexPath.section == 0 {
+                    cell.service = self.service
+                } else {
+                    cell.service = self.service?.includedServices?[indexPath.row]
+                }
             }
             return cell
+            
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("ServiceCharacteristicCell", forIndexPath: indexPath) as! ServiceCharacteristicCell
-            cell.device = self.device
-            cell.characteristic = self.service?.characteristics?[indexPath.row]
+            let cell = tableView.dequeueReusableCellWithIdentifier("ServiceCharacteristicCell", forIndexPath: indexPath)
+            if let cell = cell as? ServiceCharacteristicCell {
+                cell.device = self.device
+                cell.characteristic = self.service?.characteristics?[indexPath.row]
+            }
             return cell
         }
     }

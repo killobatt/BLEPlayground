@@ -44,17 +44,17 @@ extension NSData {
 
 extension CBUUID {
     func stringRepresentation() -> String {
-        if (self.UUIDString == CBUUIDCharacteristicFormatString) {
+        if self.UUIDString == CBUUIDCharacteristicFormatString {
             return "Format (\(self.description))"
-        } else if (self.UUIDString == CBUUIDCharacteristicUserDescriptionString) {
+        } else if self.UUIDString == CBUUIDCharacteristicUserDescriptionString {
             return "User description (\(self.UUIDString))"
-        } else if (self.UUIDString == CBUUIDCharacteristicAggregateFormatString) {
+        } else if self.UUIDString == CBUUIDCharacteristicAggregateFormatString {
             return "Aggregate format (\(self.UUIDString))"
-        } else if (self.UUIDString == CBUUIDCharacteristicExtendedPropertiesString) {
+        } else if self.UUIDString == CBUUIDCharacteristicExtendedPropertiesString {
             return "Extended properties (\(self.UUIDString))"
-        } else if (self.UUIDString == CBUUIDServerCharacteristicConfigurationString) {
+        } else if self.UUIDString == CBUUIDServerCharacteristicConfigurationString {
             return "Server configuration (\(self.UUIDString))"
-        } else if (self.UUIDString == CBUUIDClientCharacteristicConfigurationString) {
+        } else if self.UUIDString == CBUUIDClientCharacteristicConfigurationString {
             return "Client configuration (\(self.UUIDString))"
         } else {
             return self.UUIDString

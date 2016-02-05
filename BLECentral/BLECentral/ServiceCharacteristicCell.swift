@@ -32,7 +32,9 @@ class ServiceCharacteristicCell: UITableViewCell {
 
     // MARK: - IBOutlets
     
+    // swiftlint:disable variable_name
     @IBOutlet weak var UUIDLabel: UILabel!
+    // swiftlint:enable variable_name
     @IBOutlet weak var valueLabel: UILabel!
     
 }
