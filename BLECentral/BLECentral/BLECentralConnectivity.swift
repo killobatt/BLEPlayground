@@ -14,41 +14,68 @@ class BLECentralConnectivity: NSObject {
     private var centralManager: CBCentralManager! = nil
     private(set) var discoveredDevices: [BLEPeripheralDevice] = []
     
+    private let knownDevicesDefaultsKey = "knownDevices"
+    private(set) var knownDevicesUUIDs: [NSUUID] {
+        get {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            if let deviceUUIDs = defaults.objectForKey(knownDevicesDefaultsKey) as? [NSUUID] {
+                return deviceUUIDs
+            } else {
+                return []
+            }
+        }
+        set (newValue) {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            defaults.setObject(newValue, forKey: knownDevicesDefaultsKey)
+            defaults.synchronize()
+        }
+    }
+    
     override init() {
         super.init()
-        self.centralManager = CBCentralManager(delegate: self, queue: nil)
+        let options = [CBCentralManagerOptionRestoreIdentifierKey : "BLECentralConnectivity"]
+        centralManager = CBCentralManager(delegate: self, queue: nil, options: options)
     }
     
     private var discoveredDeviceCallback: ((BLEPeripheralDevice) -> Void)? = nil
     private var shouldStartScan = false
     
     func scanForDevicesWithCallback(callback: (newDevice: BLEPeripheralDevice) -> Void) {
-        self.discoveredDeviceCallback = callback
+        discoveredDeviceCallback = callback
         
-        if self.centralManager.state == .PoweredOn {
+        if centralManager.state == .PoweredOn {
             NSLog("Started scanning for peripherals...")
-            self.centralManager?.scanForPeripheralsWithServices(nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey:false])
+            let scanOptions = [CBCentralManagerScanOptionAllowDuplicatesKey:false]
+            centralManager?.scanForPeripheralsWithServices(nil, options: scanOptions)
         } else {
-            self.shouldStartScan = true
+            shouldStartScan = true
         }
+    }
+    
+    func reconnectKnownDevicesWithCallback(callback: (reconnectedDevices: [BLEPeripheralDevice]) -> Void) {
+        let peripherals = centralManager.retrievePeripheralsWithIdentifiers(knownDevicesUUIDs)
+        let devices = peripherals.map { peripheral in BLEPeripheralDevice(peripheral: peripheral) }
+        
+        discoveredDevices.appendContentsOf(devices)
+        callback(reconnectedDevices: devices)
     }
     
     func connectDevice(device: BLEPeripheralDevice) {
         if device.peripheral.state == .Disconnected {
-            self.centralManager.connectPeripheral(device.peripheral, options: nil)
+            centralManager.connectPeripheral(device.peripheral, options: nil)
         }
     }
     
     func disconnectDevice(device: BLEPeripheralDevice) {
-        self.centralManager.cancelPeripheralConnection(device.peripheral)
+        centralManager.cancelPeripheralConnection(device.peripheral)
     }
     
     
     // MARK: - Utility
     private func discoveredDeviceForPeripheral(peripheral: CBPeripheral) -> BLEPeripheralDevice? {
-        let discoveredPeripherals = self.discoveredDevices.map { $0.peripheral }
+        let discoveredPeripherals = discoveredDevices.map { $0.peripheral }
         if let index = discoveredPeripherals.indexOf(peripheral) {
-            return self.discoveredDevices[index]
+            return discoveredDevices[index]
         } else {
             return nil
         }
@@ -73,11 +100,21 @@ extension BLECentralConnectivity: CBCentralManagerDelegate {
             NSLog("PoweredOff")
         case .PoweredOn:
             NSLog("PoweredOn")
-            if self.shouldStartScan {
+            if shouldStartScan {
                 NSLog("Started scanning for peripherals...")
-                self.centralManager?.scanForPeripheralsWithServices(nil,
+                centralManager?.scanForPeripheralsWithServices(nil,
                     options: [CBCentralManagerScanOptionAllowDuplicatesKey:false])
-                self.shouldStartScan = false
+                shouldStartScan = false
+            }
+        }
+    }
+    
+    func centralManager(central: CBCentralManager, willRestoreState state: [String : AnyObject]) {
+        if let peripherals = state[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] {
+            for peripheral in peripherals {
+                let restoredDevice = BLEPeripheralDevice(peripheral: peripheral)
+                discoveredDevices.append(restoredDevice)
+                discoveredDeviceCallback?(restoredDevice)
             }
         }
     }
@@ -86,21 +123,22 @@ extension BLECentralConnectivity: CBCentralManagerDelegate {
         didDiscoverPeripheral peripheral: CBPeripheral,
         advertisementData: [String : AnyObject], RSSI: NSNumber) {
         NSLog("Did discover peripheral: \(peripheral)\n advertisement data: \(advertisementData)\n RSSI: \(RSSI)")
-        if let device = self.discoveredDeviceForPeripheral(peripheral) {
+        if let device = discoveredDeviceForPeripheral(peripheral) {
             device.RSSI = RSSI
-            self.discoveredDeviceCallback?(device)
+            discoveredDeviceCallback?(device)
         } else {
             let newDevice = BLEPeripheralDevice(peripheral: peripheral)
             newDevice.RSSI = RSSI
-            self.discoveredDevices.append(newDevice)
-            self.discoveredDeviceCallback?(newDevice)
+            discoveredDevices.append(newDevice)
+            discoveredDeviceCallback?(newDevice)
         }
     }
 
     func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
         NSLog("Connected peripheral: \(peripheral)")
-        if let device = self.discoveredDeviceForPeripheral(peripheral) {
+        if let device = discoveredDeviceForPeripheral(peripheral) {
             device.greedyFetchAllServices()
+            knownDevicesUUIDs.append(device.peripheral.identifier)
         } else {
             NSLog("Weird: connected not discovered device")
         }
@@ -109,6 +147,10 @@ extension BLECentralConnectivity: CBCentralManagerDelegate {
     func centralManager(central: CBCentralManager,
         didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
         NSLog("Failed to connected peripheral: \(peripheral), error: \(error)")
+        let discoveredPeripherals = discoveredDevices.map { $0.peripheral }
+        if let index = discoveredPeripherals.indexOf(peripheral) {
+            discoveredDevices.removeAtIndex(index)
+        }
     }
 
     func centralManager(central: CBCentralManager,

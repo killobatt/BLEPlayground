@@ -12,7 +12,7 @@ class DeviceViewController: UITableViewController {
     
     var device: BLEPeripheralDevice? = nil {
         didSet {
-            self.navigationItem.title = device?.peripheral.name
+            navigationItem.title = device?.peripheral.name
         }
     }
     
@@ -21,7 +21,7 @@ class DeviceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.device?.fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
+        device?.fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
             self.tableView.reloadData()
         }
     }
@@ -32,7 +32,7 @@ class DeviceViewController: UITableViewController {
         if let serviceViewController = segue.destinationViewController as? ServiceViewController,
             let cell = sender as? DeviceServiceCell where
             segue.identifier == "service" {
-                serviceViewController.device = self.device
+                serviceViewController.device = device
                 serviceViewController.service = cell.service
         }
     }
@@ -40,13 +40,13 @@ class DeviceViewController: UITableViewController {
     // MARK: - TableView
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.device?.services.count ?? 0
+        return device?.services.count ?? 0
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DeviceServiceCell", forIndexPath: indexPath)
         if let cell = cell as? DeviceServiceCell {
-            cell.service = self.device?.services[indexPath.row]
+            cell.service = device?.services[indexPath.row]
         }
         return cell
     }

@@ -18,11 +18,11 @@ class BLEPeripheralDevice: NSObject {
     init(peripheral: CBPeripheral) {
         self.peripheral = peripheral
         super.init()
-        self.peripheral.delegate = self
+        peripheral.delegate = self
     }
     
     deinit {
-        self.rssiUpdateTimer?.invalidate()
+        rssiUpdateTimer?.invalidate()
     }
     
     // MARK: - RSSI
@@ -31,11 +31,11 @@ class BLEPeripheralDevice: NSObject {
     private var rssiUpdateTimer: NSTimer? = nil
     private var rssiObserveCallback: RSSIObserveCallbackType? = nil
     func observeRSSIWithCallback(callback: RSSIObserveCallbackType) {
-        self.rssiObserveCallback = callback
-        if let oldTimer = self.rssiUpdateTimer {
+        rssiObserveCallback = callback
+        if let oldTimer = rssiUpdateTimer {
             oldTimer.invalidate()
         }
-        self.rssiUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
+        rssiUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
             target: self,
             selector: "updateRSSI:",
             userInfo: nil,
@@ -43,7 +43,7 @@ class BLEPeripheralDevice: NSObject {
     }
     
     func updateRSSI(timer: NSTimer) {
-        self.peripheral.readRSSI()
+        peripheral.readRSSI()
     }
     
     // MARK: - Service List
@@ -51,8 +51,8 @@ class BLEPeripheralDevice: NSObject {
     typealias FetchServicesCallback = ([BLEPeripheralService]) -> Void
     private var fetchServicesCallback: FetchServicesCallback? = nil
     func fetchServicesListWithCallback(callback: FetchServicesCallback) {
-        self.fetchServicesCallback = callback
-        self.peripheral.discoverServices(nil)
+        fetchServicesCallback = callback
+        peripheral.discoverServices(nil)
     }
     
     // MARK: - Service List
@@ -60,56 +60,61 @@ class BLEPeripheralDevice: NSObject {
     private var fetchIncludedServicesCallbacks: [CBUUID: FetchServicesCallback] = [:]
     func fetchIncludedServicesForService(service: BLEPeripheralService,
         withCallback callback: FetchServicesCallback) {
-        self.fetchIncludedServicesCallbacks[service.UUID] = callback
-        self.peripheral.discoverIncludedServices(nil, forService: service)
+        fetchIncludedServicesCallbacks[service.UUID] = callback
+        peripheral.discoverIncludedServices(nil, forService: service)
     }
     
     // MARK: - Characteristics List
     
     typealias CharacteristicDiscoveryCallback = (service: BLEPeripheralService) -> Void
     private var characteristicsDiscoveryCallbacks: [CBUUID: CharacteristicDiscoveryCallback] = [:]
-    func fetchCharacteristicsForService(service: BLEPeripheralService, withCallback callback: CharacteristicDiscoveryCallback) {
-        self.characteristicsDiscoveryCallbacks[service.UUID] = callback
-        self.peripheral.discoverCharacteristics(nil, forService: service)
+    func fetchCharacteristicsForService(service: BLEPeripheralService,
+         withCallback callback: CharacteristicDiscoveryCallback) {
+        characteristicsDiscoveryCallbacks[service.UUID] = callback
+        peripheral.discoverCharacteristics(nil, forService: service)
     }
     
     // MARK: - Characteristic Read Value
     
     typealias CharacteristicValueCallback = (characteristic: BLEPeripheralCharacteristic) -> Void
     private var characteristicsValueCallbacks: [CBUUID: CharacteristicValueCallback] = [:]
-    func fetchValueForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicValueCallback) {
-        self.characteristicsValueCallbacks[characteristic.UUID] = callback
-        self.peripheral.readValueForCharacteristic(characteristic)
+    func fetchValueForCharacteristic(characteristic: BLEPeripheralCharacteristic,
+         withCallback callback: CharacteristicValueCallback) {
+        characteristicsValueCallbacks[characteristic.UUID] = callback
+        peripheral.readValueForCharacteristic(characteristic)
     }
     
     // MARK: - Characteristic Observe Value
     
     private var characteristicsValueObserveCallbacks: [CBUUID: CharacteristicValueCallback] = [:]
-    func observeValueForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicValueCallback) {
-        self.characteristicsValueObserveCallbacks[characteristic.UUID] = callback
-        self.peripheral.setNotifyValue(true, forCharacteristic: characteristic)
+    func observeValueForCharacteristic(characteristic: BLEPeripheralCharacteristic,
+         withCallback callback: CharacteristicValueCallback) {
+        characteristicsValueObserveCallbacks[characteristic.UUID] = callback
+        peripheral.setNotifyValue(true, forCharacteristic: characteristic)
     }
     
     // MARK: - Characteristic Descriptors
     
     typealias CharacteristicDescriptorsCallback = (characteristic: BLEPeripheralCharacteristic) -> Void
     private var characteristicsDescriptorsCallbacks: [CBUUID: CharacteristicDescriptorsCallback] = [:]
-    func fetchDescriptorsForCharacteristic(characteristic: BLEPeripheralCharacteristic, withCallback callback: CharacteristicDescriptorsCallback) {
-        self.characteristicsDescriptorsCallbacks[characteristic.UUID] = callback
-        self.peripheral.discoverDescriptorsForCharacteristic(characteristic)
+    func fetchDescriptorsForCharacteristic(characteristic: BLEPeripheralCharacteristic,
+         withCallback callback: CharacteristicDescriptorsCallback) {
+        characteristicsDescriptorsCallbacks[characteristic.UUID] = callback
+        peripheral.discoverDescriptorsForCharacteristic(characteristic)
     }
     
     typealias CharacteristicDescriptorsValueCallback = (descriptor: BLEDescriptor) -> Void
     private var characteristicsDescriptorsValueCallbacks: [CBUUID: CharacteristicDescriptorsValueCallback] = [:]
-    func fetchValueForDescriptor(descriptor: BLEDescriptor, withCallback callback: CharacteristicDescriptorsValueCallback) {
-        self.characteristicsDescriptorsValueCallbacks[descriptor.UUID] = callback
-        self.peripheral.readValueForDescriptor(descriptor)
+    func fetchValueForDescriptor(descriptor: BLEDescriptor,
+         withCallback callback: CharacteristicDescriptorsValueCallback) {
+        characteristicsDescriptorsValueCallbacks[descriptor.UUID] = callback
+        peripheral.readValueForDescriptor(descriptor)
     }
     
     // MARK: - Greedy Fetch
     
     func greedyFetchAllServices() {
-        self.fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
+        fetchServicesListWithCallback { (services: [BLEPeripheralService]) -> Void in
             for service in services {
                 self.greedyFetchService(service)
             }
@@ -117,7 +122,7 @@ class BLEPeripheralDevice: NSObject {
     }
     
     func greedyFetchService(service: BLEPeripheralService) {
-        self.fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
+        fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
             if let characteristics = service.characteristics {
                 for characteristic in characteristics {
                     if characteristic.properties.contains(.Read) {
@@ -129,7 +134,7 @@ class BLEPeripheralDevice: NSObject {
             }
         }
         
-        self.fetchIncludedServicesForService(service) { (services: [BLEPeripheralService]) -> Void in
+        fetchIncludedServicesForService(service) { (services: [BLEPeripheralService]) -> Void in
             for includedService in services {
                 self.greedyFetchService(includedService)
             }
@@ -137,7 +142,7 @@ class BLEPeripheralDevice: NSObject {
     }
     
     func greedyFetchDescriptorsForCharacteristic(characteristic: BLEPeripheralCharacteristic) {
-        self.fetchDescriptorsForCharacteristic(characteristic) { (characteristic) -> Void in
+        fetchDescriptorsForCharacteristic(characteristic) { (characteristic) -> Void in
             if let descriptors = characteristic.descriptors {
                 for descriptor in descriptors {
                     self.fetchValueForDescriptor(descriptor) { (descriptor) -> Void in
@@ -188,7 +193,7 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     */
     func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
         self.RSSI = RSSI
-        self.rssiObserveCallback?(RSSI: RSSI)
+        rssiObserveCallback?(RSSI: RSSI)
     }
     
     /*!
@@ -197,7 +202,8 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @param peripheral	The peripheral providing this information.
     *	@param error		If an error occurred, the cause of the failure.
     *
-    *  @discussion			This method returns the result of a @link discoverServices: @/link call. If the service(s) were read successfully, they can be retrieved via
+    *  @discussion			This method returns the result of a @link discoverServices: @/link call. \
+     If the service(s) were read successfully, they can be retrieved via
     *						<i>peripheral</i>'s @link services @/link property.
     *
     */
@@ -206,7 +212,7 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
         
         if let services = peripheral.services {
             self.services = services
-            self.fetchServicesCallback?(services)
+            fetchServicesCallback?(services)
         }
     }
     
@@ -217,13 +223,16 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @param service		The <code>CBService</code> object containing the included services.
     *	@param error		If an error occurred, the cause of the failure.
     *
-    *  @discussion			This method returns the result of a @link discoverIncludedServices:forService: @/link call. If the included service(s) were read successfully,
+    *  @discussion			This method returns the result of a @link
+     discoverIncludedServices:forService: @/link call. If the included service(s) were read successfully,
     *						they can be retrieved via <i>service</i>'s <code>includedServices</code> property.
     */
-    func peripheral(peripheral: CBPeripheral, didDiscoverIncludedServicesForService service: CBService, error: NSError?) {
-        NSLog("Peripheral: \(peripheral.name)\n service: \(service.UUID.UUIDString)  did discover included services: \(service.includedServices)")
+    func peripheral(peripheral: CBPeripheral, didDiscoverIncludedServicesForService service: CBService,
+         error: NSError?) {
+        NSLog("Peripheral: \(peripheral.name)\n service: \(service.UUID.UUIDString) " +
+            "did discover included services: \(service.includedServices)")
         
-        if let callback = self.fetchIncludedServicesCallbacks[service.UUID],
+        if let callback = fetchIncludedServicesCallbacks[service.UUID],
             includedServices = service.includedServices {
             callback(includedServices)
         }
@@ -236,13 +245,16 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @param service		The <code>CBService</code> object containing the characteristic(s).
     *	@param error		If an error occurred, the cause of the failure.
     *
-    *  @discussion			This method returns the result of a @link discoverCharacteristics:forService: @/link call. If the characteristic(s) were read successfully,
+    *  @discussion			This method returns the result of a @link discoverCharacteristics:forService: @/link call.
+     If the characteristic(s) were read successfully,
     *						they can be retrieved via <i>service</i>'s <code>characteristics</code> property.
     */
-    func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
-        NSLog("Peripheral: \(peripheral.name)\n did discover characteristics: \(service.characteristics) for service: \(service.UUID.UUIDString), error: \(error)")
+    func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService,
+         error: NSError?) {
+        NSLog("Peripheral: \(peripheral.name)\n did discover characteristics: " +
+            " \(service.characteristics) for service: \(service.UUID.UUIDString), error: \(error)")
         
-        if let callback = self.characteristicsDiscoveryCallbacks[service.UUID] {
+        if let callback = characteristicsDiscoveryCallbacks[service.UUID] {
             callback(service: service)
         }
     }
@@ -254,14 +266,16 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @param characteristic	A <code>CBCharacteristic</code> object.
     *	@param error			If an error occurred, the cause of the failure.
     *
-    *  @discussion				This method is invoked after a @link readValueForCharacteristic: @/link call, or upon receipt of a notification/indication.
+    *  @discussion				This method is invoked after a @link readValueForCharacteristic: @/link call,
+     or upon receipt of a notification/indication.
     */
-    func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+    func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic,
+         error: NSError?) {
         
-        if let callback = self.characteristicsValueCallbacks[characteristic.UUID] {
+        if let callback = characteristicsValueCallbacks[characteristic.UUID] {
             callback(characteristic: characteristic)
         }
-        if let callback = self.characteristicsValueObserveCallbacks[characteristic.UUID] {
+        if let callback = characteristicsValueObserveCallbacks[characteristic.UUID] {
             callback(characteristic: characteristic)
         }
     }
@@ -273,9 +287,11 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @param characteristic	A <code>CBCharacteristic</code> object.
     *	@param error			If an error occurred, the cause of the failure.
     *
-    *  @discussion				This method returns the result of a {@link writeValue:forCharacteristic:type:} call, when the <code>CBCharacteristicWriteWithResponse</code> type is used.
+    *  @discussion				This method returns the result of a {@link writeValue:forCharacteristic:type:} call,
+     when the <code>CBCharacteristicWriteWithResponse</code> type is used.
     */
-    func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+    func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic,
+         error: NSError?) {
         
     }
     
@@ -288,7 +304,8 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *
     *  @discussion				This method returns the result of a @link setNotifyValue:forCharacteristic: @/link call.
     */
-    func peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+    func peripheral(peripheral: CBPeripheral,
+         didUpdateNotificationStateForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
         
     }
     
@@ -299,11 +316,13 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @param characteristic	A <code>CBCharacteristic</code> object.
     *	@param error			If an error occurred, the cause of the failure.
     *
-    *  @discussion				This method returns the result of a @link discoverDescriptorsForCharacteristic: @/link call. If the descriptors were read successfully,
+    *  @discussion				This method returns the result of a @link discoverDescriptorsForCharacteristic: @/link 
+     call. If the descriptors were read successfully,
     *							they can be retrieved via <i>characteristic</i>'s <code>descriptors</code> property.
     */
-    func peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
-        if let callback = self.characteristicsDescriptorsCallbacks[characteristic.UUID] {
+    func peripheral(peripheral: CBPeripheral,
+         didDiscoverDescriptorsForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+        if let callback = characteristicsDescriptorsCallbacks[characteristic.UUID] {
             callback(characteristic: characteristic)
         }
     }
@@ -318,7 +337,7 @@ extension BLEPeripheralDevice: CBPeripheralDelegate {
     *  @discussion				This method returns the result of a @link readValueForDescriptor: @/link call.
     */
     func peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor descriptor: CBDescriptor, error: NSError?) {
-        if let callback = self.characteristicsDescriptorsValueCallbacks[descriptor.UUID] {
+        if let callback = characteristicsDescriptorsValueCallbacks[descriptor.UUID] {
             callback(descriptor: descriptor)
         }
     }

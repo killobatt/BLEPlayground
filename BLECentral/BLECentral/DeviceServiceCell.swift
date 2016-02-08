@@ -12,7 +12,7 @@ class DeviceServiceCell: UITableViewCell {
     
     var service: BLEPeripheralService? = nil {
         didSet {
-            self.UUIDLabel.text = service?.UUID.UUIDString
+            UUIDLabel.text = service?.UUID.UUIDString
         }
     }
     

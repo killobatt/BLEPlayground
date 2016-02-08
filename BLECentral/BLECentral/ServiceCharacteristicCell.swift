@@ -13,11 +13,11 @@ class ServiceCharacteristicCell: UITableViewCell {
     var device: BLEPeripheralDevice? = nil
     var characteristic: BLEPeripheralCharacteristic? = nil {
         didSet {
-            if let characteristic = self.characteristic {
-                self.UUIDLabel.text = characteristic.UUID.UUIDString
+            if let characteristic = characteristic {
+                UUIDLabel.text = characteristic.UUID.UUIDString
                 if let value = characteristic.value {
-                    self.setCharacteristicValue(value)
-                } else if let device = self.device {
+                    setCharacteristicValue(value)
+                } else if let device = device {
                     device.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
                         self.setCharacteristicValue(characteristic.value)
                     }
@@ -27,7 +27,7 @@ class ServiceCharacteristicCell: UITableViewCell {
     }
 
     private func setCharacteristicValue(value: NSData?) {
-        self.valueLabel.text = value?.stringRepresentation()
+        valueLabel.text = value?.stringRepresentation()
     }
 
     // MARK: - IBOutlets

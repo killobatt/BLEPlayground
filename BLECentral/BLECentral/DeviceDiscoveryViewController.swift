@@ -17,14 +17,20 @@ class DeviceDiscoveryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.centralConnectivity = BLECentralConnectivity()
+        centralConnectivity = BLECentralConnectivity()
     }
     
     // MARK: - IBActions
     
     @IBAction func scanPressed(sender: AnyObject) {
-        self.centralConnectivity.scanForDevicesWithCallback { (newDevice) -> Void in
+        centralConnectivity.scanForDevicesWithCallback { (newDevice) -> Void in
             self.centralConnectivity.connectDevice(newDevice)
+            self.tableView.reloadData()
+        }
+    }
+    
+    @IBAction func reconnectPressed(sender: AnyObject) {
+        centralConnectivity.reconnectKnownDevicesWithCallback { (reconnectedDevices) in
             self.tableView.reloadData()
         }
     }
@@ -46,7 +52,7 @@ class DeviceDiscoveryViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DeviceDiscoveryTableViewCell", forIndexPath: indexPath)
         if let cell = cell as? DeviceDiscoveryTableViewCell {
-            cell.device = self.centralConnectivity.discoveredDevices[indexPath.row]
+            cell.device = centralConnectivity.discoveredDevices[indexPath.row]
         }
         return cell
     }

@@ -12,7 +12,7 @@ class ServiceViewController: UITableViewController {
 
     var device: BLEPeripheralDevice? = nil {
         didSet {
-            self.navigationItem.title = device?.peripheral.name
+            navigationItem.title = device?.peripheral.name
         }
     }
     var service: BLEPeripheralService? = nil
@@ -22,8 +22,8 @@ class ServiceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let device = self.device,
-            let service = self.service {
+        if let device = device,
+            let service = service {
                 device.fetchCharacteristicsForService(service) { (service: BLEPeripheralService) -> Void in
                     self.tableView.reloadData()
                 }
@@ -36,7 +36,7 @@ class ServiceViewController: UITableViewController {
         if let serviceViewController = segue.destinationViewController as? CharacteristicViewController,
             let cell = sender as? ServiceCharacteristicCell where
             segue.identifier == "characteristic" {
-                serviceViewController.device = self.device
+                serviceViewController.device = device
                 serviceViewController.characteristic = cell.characteristic
         }
     }
@@ -51,9 +51,9 @@ class ServiceViewController: UITableViewController {
         if section == 0 {
             return 1
         } else if section == 1 {
-            return self.service?.includedServices?.count ?? 0
+            return service?.includedServices?.count ?? 0
         } else if section == 2 {
-            return self.service?.characteristics?.count ?? 0
+            return service?.characteristics?.count ?? 0
         } else {
             return 0
         }
@@ -65,9 +65,9 @@ class ServiceViewController: UITableViewController {
                 forIndexPath: indexPath)
             if let cell = cell as? DeviceServiceCell {
                 if indexPath.section == 0 {
-                    cell.service = self.service
+                    cell.service = service
                 } else {
-                    cell.service = self.service?.includedServices?[indexPath.row]
+                    cell.service = service?.includedServices?[indexPath.row]
                 }
             }
             return cell
@@ -75,8 +75,8 @@ class ServiceViewController: UITableViewController {
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier("ServiceCharacteristicCell", forIndexPath: indexPath)
             if let cell = cell as? ServiceCharacteristicCell {
-                cell.device = self.device
-                cell.characteristic = self.service?.characteristics?[indexPath.row]
+                cell.device = device
+                cell.characteristic = service?.characteristics?[indexPath.row]
             }
             return cell
         }

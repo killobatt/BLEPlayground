@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10089" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="KzR-yo-Skq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10102" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="KzR-yo-Skq">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10072.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10080"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -57,6 +57,11 @@
                         <barButtonItem key="leftBarButtonItem" title="Scan" id="rpw-ge-VCk">
                             <connections>
                                 <action selector="scanPressed:" destination="fEd-kb-NPe" id="sm5-oT-5qr"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Reconnect" id="kgv-ey-Iim">
+                            <connections>
+                                <action selector="reconnectPressed:" destination="fEd-kb-NPe" id="QSb-bN-v0y"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

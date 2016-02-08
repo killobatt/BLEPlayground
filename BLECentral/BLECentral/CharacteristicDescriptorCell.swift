@@ -13,11 +13,11 @@ class CharacteristicDescriptorCell: UITableViewCell {
     var device: BLEPeripheralDevice? = nil
     var descriptor: BLEDescriptor? = nil {
         didSet {
-            if let descriptor = self.descriptor {
-                self.UUIDLabel.text = descriptor.UUID.stringRepresentation()
+            if let descriptor = descriptor {
+                UUIDLabel.text = descriptor.UUID.stringRepresentation()
                 if let value = descriptor.value {
-                    self.valueLabel.text = value.description
-                } else if let device = self.device {
+                    valueLabel.text = value.description
+                } else if let device = device {
                     device.fetchValueForDescriptor(descriptor) { (descriptor) -> Void in
                        self.valueLabel.text = descriptor.value?.description
                     }

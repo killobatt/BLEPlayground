@@ -12,17 +12,17 @@ class DeviceDiscoveryTableViewCell: UITableViewCell {
 
     var device: BLEPeripheralDevice? = nil {
         didSet {
-            if let device = self.device {
-                self.nameLabel.text = device.peripheral.name
-                self.RSSILabel.text = "\(device.RSSI) db"
+            if let device = device {
+                nameLabel.text = device.peripheral.name
+                RSSILabel.text = "\(device.RSSI) db"
                 device.observeRSSIWithCallback { [weak self] (RSSI: NSNumber?) -> Void in
                     if let RSSI = RSSI {
                         self?.RSSILabel.text = "\(RSSI) db"
                     }
                 }
             } else {
-                self.nameLabel.text = ""
-                self.RSSILabel.text = "0 db"
+                nameLabel.text = ""
+                RSSILabel.text = "0 db"
             }
         }
     }

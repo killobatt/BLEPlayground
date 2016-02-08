@@ -12,15 +12,15 @@ class CharacteristicViewController: UITableViewController {
 
     var device: BLEPeripheralDevice? = nil {
         didSet {
-            self.navigationItem.title = device?.peripheral.name
+            navigationItem.title = device?.peripheral.name
         }
     }
 
     var characteristic: BLEPeripheralCharacteristic? = nil {
         didSet {
-            self.tableView.reloadData()
-            if let characteristic = self.characteristic where characteristic.properties.contains(.Notify) {
-                self.device?.observeValueForCharacteristic(characteristic) { (characteristic) -> Void in
+            tableView.reloadData()
+            if let characteristic = characteristic where characteristic.properties.contains(.Notify) {
+                device?.observeValueForCharacteristic(characteristic) { (characteristic) -> Void in
                     self.device?.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
                         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
                     }
@@ -34,8 +34,8 @@ class CharacteristicViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let characteristic = self.characteristic {
-            self.device?.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
+        if let characteristic = characteristic {
+            device?.fetchValueForCharacteristic(characteristic) { (characteristic) -> Void in
                 self.device?.fetchDescriptorsForCharacteristic(characteristic) { (characteristic) -> Void in
                     if let descriptors = characteristic.descriptors {
                         for descriptor in descriptors {
@@ -57,7 +57,7 @@ class CharacteristicViewController: UITableViewController {
 //        if let serviceViewController = segue.destinationViewController as? ServiceViewController,
 //            let cell = sender as? DeviceServiceCell where
 //            segue.identifier == "service" {
-//                serviceViewController.device = self.device
+//                serviceViewController.device = device
 //                serviceViewController.service = cell.service
 //        }
 //    }
@@ -72,7 +72,7 @@ class CharacteristicViewController: UITableViewController {
         if section == 0 {
             return 3
         } else {
-            return self.characteristic?.descriptors?.count ?? 0
+            return characteristic?.descriptors?.count ?? 0
         }
     }
 
@@ -86,21 +86,22 @@ class CharacteristicViewController: UITableViewController {
 
             if indexPath.row == 0 {
                 cell?.textLabel?.text = "UUID"
-                cell?.detailTextLabel?.text = self.characteristic?.UUID.UUIDString
+                cell?.detailTextLabel?.text = characteristic?.UUID.UUIDString
             } else if indexPath.row == 1 {
                 cell?.textLabel?.text = "Raw value"
-                cell?.detailTextLabel?.text = self.characteristic?.value?.description
+                cell?.detailTextLabel?.text = characteristic?.value?.description
             } else if indexPath.row == 2 {
                 cell?.textLabel?.text = "Value"
-                cell?.detailTextLabel?.text = self.characteristic?.value?.stringRepresentation()
+                cell?.detailTextLabel?.text = characteristic?.value?.stringRepresentation()
             }
 
             return cell!
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("CharacteristicDescriptorCell", forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier("CharacteristicDescriptorCell",
+                                                                   forIndexPath: indexPath)
             if let cell = cell as? CharacteristicDescriptorCell {
-                cell.device = self.device
-                cell.descriptor = self.characteristic?.descriptors?[indexPath.row]
+                cell.device = device
+                cell.descriptor = characteristic?.descriptors?[indexPath.row]
             }
             return cell
         }

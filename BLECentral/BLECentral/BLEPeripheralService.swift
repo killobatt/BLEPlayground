@@ -20,7 +20,7 @@ typealias BLEDescriptor = CBDescriptor
 //    private(set) var service: CBService
 //    
 //    init(service: CBService) {
-//        self.service = service
+//        service = service
 //        super.init()
 //    }
 //    
@@ -35,7 +35,7 @@ extension NSData {
         } else if let string = NSString(data: self, encoding: NSUTF8StringEncoding) as? String {
             return string
         } else {
-            return self.description
+            return description
         }
     }
 
@@ -44,20 +44,20 @@ extension NSData {
 
 extension CBUUID {
     func stringRepresentation() -> String {
-        if self.UUIDString == CBUUIDCharacteristicFormatString {
-            return "Format (\(self.description))"
-        } else if self.UUIDString == CBUUIDCharacteristicUserDescriptionString {
-            return "User description (\(self.UUIDString))"
-        } else if self.UUIDString == CBUUIDCharacteristicAggregateFormatString {
-            return "Aggregate format (\(self.UUIDString))"
-        } else if self.UUIDString == CBUUIDCharacteristicExtendedPropertiesString {
-            return "Extended properties (\(self.UUIDString))"
-        } else if self.UUIDString == CBUUIDServerCharacteristicConfigurationString {
-            return "Server configuration (\(self.UUIDString))"
-        } else if self.UUIDString == CBUUIDClientCharacteristicConfigurationString {
-            return "Client configuration (\(self.UUIDString))"
+        if UUIDString == CBUUIDCharacteristicFormatString {
+            return "Format (\(description))"
+        } else if UUIDString == CBUUIDCharacteristicUserDescriptionString {
+            return "User description (\(UUIDString))"
+        } else if UUIDString == CBUUIDCharacteristicAggregateFormatString {
+            return "Aggregate format (\(UUIDString))"
+        } else if UUIDString == CBUUIDCharacteristicExtendedPropertiesString {
+            return "Extended properties (\(UUIDString))"
+        } else if UUIDString == CBUUIDServerCharacteristicConfigurationString {
+            return "Server configuration (\(UUIDString))"
+        } else if UUIDString == CBUUIDClientCharacteristicConfigurationString {
+            return "Client configuration (\(UUIDString))"
         } else {
-            return self.UUIDString
+            return UUIDString
         }
     }
 }
