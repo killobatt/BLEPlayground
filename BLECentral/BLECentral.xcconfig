@@ -1,0 +1,10 @@
+//
+//  BLECentral.xcconfig
+//  BLECentral
+//
+//  Created by Vjacheslav Volodko on 21.02.16.
+//  Copyright © 2016 Vjacheslav Volodko. All rights reserved.
+//
+
+CODE_SIGN_IDENTITY = "iPhone Distribution: Lohika Systems, Inc. (96KHWMMBV3)"
+

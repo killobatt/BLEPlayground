@@ -48,6 +48,7 @@
 /* Begin PBXFileReference section */
 		1E7A28111C60E4A40003DEBF /* CharacteristicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicViewController.swift; sourceTree = "<group>"; };
 		1E7A28131C60E7820003DEBF /* CharacteristicDescriptorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicDescriptorCell.swift; sourceTree = "<group>"; };
+		1E9039B71C79E6F50083B808 /* BLECentral.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BLECentral.xcconfig; sourceTree = "<group>"; };
 		1EBF72741C5AC0320043E591 /* BLECentral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLECentral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EBF72771C5AC0320043E591 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1EBF727C1C5AC0320043E591 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -101,6 +102,7 @@
 		1EBF726B1C5AC0320043E591 = {
 			isa = PBXGroup;
 			children = (
+				1E9039B71C79E6F50083B808 /* BLECentral.xcconfig */,
 				1EBF72761C5AC0320043E591 /* BLECentral */,
 				1EBF728B1C5AC0320043E591 /* BLECentralTests */,
 				1EBF72961C5AC0320043E591 /* BLECentralUITests */,
@@ -230,6 +232,7 @@
 				TargetAttributes = {
 					1EBF72731C5AC0320043E591 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 96KHWMMBV3;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -385,6 +388,7 @@
 /* Begin XCBuildConfiguration section */
 		1EBF729A1C5AC0320043E591 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1E9039B71C79E6F50083B808 /* BLECentral.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -430,6 +434,7 @@
 		};
 		1EBF729B1C5AC0320043E591 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1E9039B71C79E6F50083B808 /* BLECentral.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -470,6 +475,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = BLECentral/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -482,6 +488,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = BLECentral/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
